@@ -10,7 +10,11 @@
     "make": "electron-forge make"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "ffmpeg": "0.0.4",
+    "fs": "0.0.1-security",
+    "http": "0.0.1-security",
+    "ytdl-core": "^4.1.1"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
