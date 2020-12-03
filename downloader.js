@@ -16,33 +16,6 @@ async function getVideoInfo(url){
 }
 
 
-function retrieveImportantInfo(formats){
-  let simpformats = [];
-  for (var i = 0; i < formats.length; i++) {
-    //get container and itag
-    let container = formats[i]["container"];
-    let itag = formats[i]["itag"];
-
-    //retrieve video data
-    if(formats[i]["hasVideo"] === true){
-      let video = {};
-      video["fps"] = formats[i]["fps"];
-      video["qualityLabel"] = formats[i]["fps"];
-    } else {
-      let video = null;
-    }
-
-    //retrieve audio
-    if (formats[i]["hasAudio"] === true) {
-      let audio = {};
-      audio["audiobitrate"] = formats[i]["audiobitrate"];
-    } else {
-      let audio = null;
-    }
-    simpformats.push({"container": container, "itag": itag, "audio": audio, "video": video});
-  }
-  return simpformats;
-}
 
 
 function downloadByItag(url, itag, container, filename){
@@ -55,3 +28,4 @@ function downloadByItag(url, itag, container, filename){
 }
 
 info = getVideoInfo("https://www.youtube.com/watch?v=_UX0kjOLQXs");
+console.log(impinfo);
