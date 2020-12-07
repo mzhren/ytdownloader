@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <title>YouTube Downloader</title>
-    <link rel="stylesheet" href="style1.css">
-    <script type="text/javascript" src="downloader.js"></script>
+    <meta charset="utf-8">
+    <title>Youtube Downloader</title>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <h1 class="heading">My Own YouTube Downloader !</h1>
-    <input class="URL-input" placeholder="Video URL e.g. https://www.youtube.com/watch?v=MtN1YnoL46Q">
-    <button class="convert-button" id="button">Convert</button>
+    <h1>Youtube Downloader</h1>
+    <input autofocus type="text" name="yturl" value="">
+
+    <select id="videofselect" name="videof">
+      <option value="None">None</option>
+    </select>
+    <select id="audiofselect" name="audiof">
+      <option value="None">None</option>
+    </select>
+
+    <button type="button" name="button">Convert</button>
+    <!--bottom script-->
+    <script type="text/javascript" src="main.js"></script>
   </body>
 </html>

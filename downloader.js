@@ -11,11 +11,8 @@ const ffmpeg = require('ffmpeg');
 //functions
 async function getVideoInfo(url){
   let info =  await ytdl.getInfo(url);
-  console.log(info);
   return info;
 }
-
-
 
 
 function downloadByItag(url, itag, container, filename){
@@ -27,5 +24,7 @@ function downloadByItag(url, itag, container, filename){
   }
 }
 
+
+
+
 info = getVideoInfo("https://www.youtube.com/watch?v=_UX0kjOLQXs");
-console.log(impinfo);
