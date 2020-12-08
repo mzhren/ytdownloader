@@ -1,7 +1,12 @@
 const fs = require("fs");
 const ytdl = require("ytdl-core");
-const http = require('http');
 const ffmpeg = require('ffmpeg');
+
+//dumb
+const textinput = document.getElementById("urlinput");
+const videoformat = document.getElementById("videofselect");
+const audioformat = document.getElementById("audiofselect");
+
 
 //ytdl("https://www.youtube.com/watch?v=_UX0kjOLQXs", { filter: "videoonly", quality: "highest" })
 //.pipe(fs.createWriteStream("video.mp4"));
@@ -9,12 +14,6 @@ const ffmpeg = require('ffmpeg');
 //test url "https://www.youtube.com/watch?v=_UX0kjOLQXs"
 
 //functions
-async function getVideoInfo(url){
-  let info =  await ytdl.getInfo(url);
-  return info;
-}
-
-
 function downloadByItag(url, itag, container, filename){
   try {
     ytdl(url, { quality: itag })
@@ -24,7 +23,25 @@ function downloadByItag(url, itag, container, filename){
   }
 }
 
+function hasaudio(format){
+  if(format.audioBitrate != null){//a string, not null
+    return true;
+  }
+}
 
+function hasvideo(format){
+  if(format.height != null){
+    return true;
+  }
+}
 
-
-info = getVideoInfo("https://www.youtube.com/watch?v=_UX0kjOLQXs");
+textinput.addEventListener("input", async() => {
+  if(ytdl.validateURL(textinput.value)){
+    let info = await ytdl.getInfo(textinput.value);
+    //selects
+    console.log(info.formats);
+    videoformat.setAttribute("disabled", true);
+    audioformat.setAttribute("disabled", true);
+    console.log(info.formats.filter(hasaudio));
+  }
+});

@@ -3,21 +3,19 @@
   <head>
     <meta charset="utf-8">
     <title>Youtube Downloader</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style1.css">
   </head>
   <body>
     <h1>Youtube Downloader</h1>
-    <input autofocus type="text" name="yturl" value="">
-
+    <input id="urlinput" autofocus type="text" name="yturl" placeholder="https://www.youtube.[TLD]/watch?=VideoID" value="">
     <select id="videofselect" name="videof">
       <option value="None">None</option>
     </select>
     <select id="audiofselect" name="audiof">
       <option value="None">None</option>
     </select>
-
-    <button type="button" name="button">Convert</button>
+    <button type="submit" name="button">Convert</button>
     <!--bottom script-->
-    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="downloader.js"></script>
   </body>
 </html>
