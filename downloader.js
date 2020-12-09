@@ -1,7 +1,6 @@
 const fs = require("fs");
 const ytdl = require("ytdl-core");
 const ffmpeg = require('ffmpeg');
-const path = "";
 
 //dumb
 const textinput = document.getElementById("urlinput");
@@ -9,25 +8,28 @@ const videoformat = document.getElementById("videofselect");
 const audioformat = document.getElementById("audiofselect");
 const button = document.getElementsByName("button");
 
+//const
+const path = "";
+
 //var
 var itagvideo = null;
 var itagaudio = null;
 
-//ytdl("https://www.youtube.com/watch?v=_UX0kjOLQXs", { filter: "videoonly", quality: "highest" })
-//.pipe(fs.createWriteStream("video.mp4"));
-
-//test url "https://www.youtube.com/watch?v=_UX0kjOLQXs"
 
 //functions
 
 //filter
-function filterformats(formats){
+function filter_vid_aud_both(formats){
   audiof = formats.filter(hasaudio);
   videof = formats.filter(hasvideo);
-  both = audiof.filter(format => format in videof);
+  both = audiof.filter(function(format){
+    return videof.includes(format);
+  });
   return [videof, audiof, both];
 }
 
+
+//one liner formats.filter(format => format.attribute =/</> wish);
 //filter functions
 function hasaudio(format){
   if(format.audioBitrate != null){//a string, not null
@@ -70,23 +72,26 @@ textinput.addEventListener("input", async() => {
   if(ytdl.validateURL(textinput.value)){
     let info = await ytdl.getInfo(textinput.value);
     //filter
-    formats = filterformats(info.formats);
-    //add to array and display
-    //videooqualis
-    videooquali = [];
-    for (let i = 0; i < formats[0].length; i++) {
-      videoquali.push(formats[0][i].height);
-      if(!(formats[0][i].height in videoquali)){
-        makeoption(videoformat, formats[0][i].height);
-      }
+    formats = filter_vid_aud_both(info.formats);
+    //filter for displaying; video
+    videoquali = formats[0].map(vheight => vheight.height);
+    vquali_unique = videoquali.filter((value, index, self) => self.indexOf(value) === index);
+    vquali_unique.sort((a, b) => {
+      return b-a;
+    });
+    //audio
+    audioquali = formats[1].map(bitrate => bitrate.audioBitrate);
+    aquali_unique = audioquali.filter((value, index, self) => self.indexOf(value) === index);
+    aquali_unique.sort((a, b) => {
+      return b-a;
+    });
+    //display video
+    for (let i = 0; i < vquali_unique.length; i++) {
+      makeoption(videoformat, vquali_unique[i]);
     }
-    //audioqualis
-    audioquali = [];
-    for (let i = 0; i < formats[1].length; i++) {
-      audioquali.push(formats[1][i].audioBitrate);
-      if(!(formats[1][i].audioBitrate in audioquali)){
-        makeoption(audioformat, formats[1][i].audioBitrate);
-      }
+    //display audio
+    for (let i = 0; i < aquali_unique.length; i++) {
+      makeoption(audioformat, aquali_unique[i]);
     }
   } else {
     //remove all childs of the selects and add the None option back
