@@ -10,8 +10,10 @@
     "make": "electron-forge make"
   },
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "electron-squirrel-startup": "^1.0.0",
     "ffmpeg": "0.0.4",
+    "ffmpeg-probe": "^1.0.6",
     "fluent-ffmpeg": "^2.1.2",
     "fs": "0.0.1-security",
     "http": "0.0.1-security",
