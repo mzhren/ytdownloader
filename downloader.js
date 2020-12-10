@@ -1,7 +1,8 @@
+//requirements
 const fs = require("fs");
 const ytdl = require("ytdl-core");
-const ffmpeg = require('ffmpeg');
-
+var ffmpeg = require('fluent-ffmpeg');
+var command = ffmpeg();
 //dumb
 const textinput = document.getElementById("urlinput");
 const videoformat = document.getElementById("videofselect");
@@ -74,6 +75,9 @@ textinput.addEventListener("input", async() => {
     let info = await ytdl.getInfo(textinput.value);
     //filter
     let formats = filter_vid_aud_both(info.formats);
+    let formatsall = formats;
+    let formats = formats.filter((value) => { return !(value.hasaudio && value.hasvideo)}
+    });
     //filter for displaying
     //video
     let videoquali = formats[0].map(vheight => vheight.height);
@@ -95,7 +99,7 @@ textinput.addEventListener("input", async() => {
     for (let i = 0; i < aquali_unique.length; i++) {
       makeoption(audioformat, aquali_unique[i]);
     }
-    inputdata = [info, formats, videoquali, vquali_unique, audioquali, aquali_unique];
+    inputdata = [info, formatswithoutboth, videoquali, vquali_unique, audioquali, aquali_unique];
   } else {
     //remove all childs of the selects and add the None option back
     //because its not a YT link anymore
@@ -130,13 +134,19 @@ button[0].addEventListener("click", async() => {
   }
 
   //merge with ffmpeg
-  /*
   try {
-    if(fs.stat(filepaths[0], (err, stats) => { return stats.isFile()}){
-      var video = new ffmpeg(path + )
+    //create and input vid/aud if downloaded
+    var video = ffmpeg();
+    if(fs.stat(filepaths[0], (err, stats) => { return stats.isFile()){
+      video.input(filepath[0]);
+
     }
+    if(fs.stat(filepaths[1], (err, stats) => { return stats.isFile()){
+      video.input(filepath[1]);
+    }
+    video.output(fs.createWriteStream(inputdata[0] + ".mp4"))
 
   } catch (e) {
+
   }
-  */
 });

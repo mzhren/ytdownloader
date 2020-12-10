@@ -12,6 +12,7 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "ffmpeg": "0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
     "fs": "0.0.1-security",
     "http": "0.0.1-security",
     "ytdl-core": "^4.1.4"
