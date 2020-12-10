@@ -116,16 +116,16 @@ button[0].addEventListener("click", async() => {
   //download audio and video depending on the selections; defaults for None
   //writes 2 files
   if( (videoformat.value == "None") && (audioformat.value == "None")){
-    await downloadvidaud(path, inputdata[0].title, , "mp4", "mp4");
-  } else if( ((videoformat.value == "None") && (audioformat.value != "None")){
-    var aformat = inputdata[1].filter(value => return value.audioBitrate == audioformat.value)[0];
+    await downloadvidaud(path, inputdata[0].title, 136, "mp4", 18, "mp4");
+  } else if( ((videoformat.value == "None") && (audioformat.value != "None"))){
+    var aformat = inputdata[1].filter(value => value.audioBitrate == audioformat.value)[0];
     filepaths = await downloadvidaud(path, inputdata[0].title, null, null, aformat.itag, aformat.container);
-  } else if( ((videoformat.value != "None") && (audioformat.value == "None")){
-    var vformat = inputdata[1].filter(value => return value.height == videoformat.value)[0]
+  } else if( ((videoformat.value != "None") && (audioformat.value == "None"))){
+    var vformat = inputdata[1].filter(value => value.height == videoformat.value)[0]
     filepaths = await downloadvidaud(path, inputdata[0].title, vformat.itag, vformat.container, null, null);
   } else {
-    var vformat = inputdata[1].filter(value => return value.height == videoformat.value)[0]
-    var aformat = inputdata[1].filter(value => return value.audioBitrate == audioformat.value)[0];
+    var vformat = inputdata[1].filter(value => value.height == videoformat.value)[0]
+    var aformat = inputdata[1].filter(value => value.audioBitrate == audioformat.value)[0];
     filepaths = await downloadvidaud(path, inputdata[0].title, vformat.itag, vformat.container, aformat.itag, aformat.container);
   }
 
