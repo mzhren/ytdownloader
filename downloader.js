@@ -1,10 +1,8 @@
 //requirements
 const fs = require("fs");
 const ytdl = require("ytdl-core");
-//const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
-//ffmpeg.setFfmpegPath(ffmpegPath);
-//var ffmpeg = require('fluent-ffmpeg');
+
 //dumb
 const textinput = document.getElementById("urlinput");
 const videoformat = document.getElementById("videofselect");
@@ -120,7 +118,7 @@ button[0].addEventListener("click", async() => {
   //download audio and video depending on the selections; defaults for None
   //writes 2 files
   if( (videoformat.value == "None") && (audioformat.value == "None")){
-    var filepaths = await downloadvidaud(path, inputdata[0].videoDetails.title, 136, "mp4", 18, "mp4");
+    var filepaths = await downloadvidaud(path, inputdata[0].videoDetails.title, 136, "mp4", 140, "mp4");
   } else if( ((videoformat.value == "None") && (audioformat.value != "None"))){
     var aformat = inputdata[1][1].filter(value => value.audioBitrate == audioformat.value)[0];
     filepaths = await downloadvidaud(path, inputdata[0].videoDetails.title, null, null, aformat.itag, aformat.container);
@@ -132,20 +130,17 @@ button[0].addEventListener("click", async() => {
     var aformat = inputdata[1][1].filter(value => value.audioBitrate == audioformat.value)[0];
     var filepaths = await downloadvidaud(path, inputdata[0].videoDetails.title, vformat.itag, vformat.container, aformat.itag, aformat.container);
   }
-  console.log(filepaths);
   //merge with ffmpeg
   try {
     //create and input vid/aud if downloaded
     var video = ffmpeg();
     if(fs.stat(filepaths[0], (err, stats) => { return stats.isFile(); })){
-      console.log(filepaths[0]);
       video.input(filepaths[0]);
     }
     if(fs.stat(filepaths[1], (err, stats) => { return stats.isFile(); })){
       video.input(filepaths[1]);
     }
     video.output(fs.createWriteStream(inputdata[0].videoDetails.title + ".mp4"));
-    video.run();
   } catch (e) {
     console.log(e);
   }
