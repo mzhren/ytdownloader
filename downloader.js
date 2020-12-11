@@ -1,7 +1,10 @@
 //requirements
 const fs = require("fs");
 const ytdl = require("ytdl-core");
+const path = require("path");
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 //dumb
 const textinput = document.getElementById("urlinput");
@@ -10,12 +13,16 @@ const audioformat = document.getElementById("audiofselect");
 const button = document.getElementsByName("button");
 
 //const
-const path = "";
+const downloadpath = "";
 
 //var
 var itagvideo = null;
 var itagaudio = null;
 
+//test
+console.log(path.resolve("index.html"));
+//ytdl("https://www.youtube.com/watch?v=wVyRLq4xSEc" , { quality: 18})
+//.pipe(fs.createWriteStream("a;dsklfj.mp4"));
 
 //functions
 
@@ -45,17 +52,28 @@ function hasvideo(format){
 }
 
 //download
-function downloadvidaud(path, name, itagvideo, containerv, itagaudio, containera){// "", title, 18, mp4, 18, mp4,
+function downloadvidaud(downloadpath, name, itagvideo, containerv, itagaudio, containera){// "", title, 18, mp4, 18, mp4,
   if(ytdl.validateURL(textinput.value)){
+    //remove chars from name that can`t be in windows filename
+    // <>:"/\|?*
+    char = String.raw`<>:"/\|?*`;
+    for (let i = 0; i < name.length; i++) {
+	    for(let j = 0; j < char.length; j++){
+        name = name.replace(char[j], "");
+	    }
+    }
+    //download
+    //vid
     if(itagvideo != null){
       ytdl(textinput.value, { quality: itagvideo})
-      .pipe(fs.createWriteStream(path + name + "v" + "." + containerv));
+      .pipe(fs.createWriteStream(downloadpath + name + "v" + "." + containerv));
     }
+    //aud
     if(itagaudio != null){
       ytdl(textinput.value, { quality: itagaudio})
-      .pipe(fs.createWriteStream(path + name + "a" + "." + containera));
+      .pipe(fs.createWriteStream(downloadpath + name + "a" + "." + containera));
     }
-    return [path + name + "v" + "." + containerv, path + name + "a" + "." + containera];
+    return [downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera];
   }
 }
 
@@ -118,29 +136,39 @@ button[0].addEventListener("click", async() => {
   //download audio and video depending on the selections; defaults for None
   //writes 2 files
   if( (videoformat.value == "None") && (audioformat.value == "None")){
-    var filepaths = await downloadvidaud(path, inputdata[0].videoDetails.title, 136, "mp4", 140, "mp4");
+    var filepaths = await downloadvidaud(downloadpath, inputdata[0].videoDetails.title, 136, "mp4", 140, "mp4");
   } else if( ((videoformat.value == "None") && (audioformat.value != "None"))){
     var aformat = inputdata[1][1].filter(value => value.audioBitrate == audioformat.value)[0];
-    filepaths = await downloadvidaud(path, inputdata[0].videoDetails.title, null, null, aformat.itag, aformat.container);
+    filepaths = await downloadvidaud(downloadpath, inputdata[0].videoDetails.title, null, null, aformat.itag, aformat.container);
   } else if( ((videoformat.value != "None") && (audioformat.value == "None"))){
     var vformat = inputdata[1][0].filter(value => value.height == videoformat.value)[0]
-    filepaths = await downloadvidaud(path, inputdata[0].videoDetails.title, vformat.itag, vformat.container, null, null);
+    filepaths = await downloadvidaud(downloadpath, inputdata[0].videoDetails.title, vformat.itag, vformat.container, null, null);
   } else {
     var vformat = inputdata[1][0].filter(value => value.height == videoformat.value)[0];
     var aformat = inputdata[1][1].filter(value => value.audioBitrate == audioformat.value)[0];
-    var filepaths = await downloadvidaud(path, inputdata[0].videoDetails.title, vformat.itag, vformat.container, aformat.itag, aformat.container);
+    var filepaths = await downloadvidaud(downloadpath, inputdata[0].videoDetails.title, vformat.itag, vformat.container, aformat.itag, aformat.container);
   }
-  //merge with ffmpeg
+
+  //merge with fluent-ffmpeg
   try {
     //create and input vid/aud if downloaded
     var video = ffmpeg();
-    if(fs.stat(filepaths[0], (err, stats) => { return stats.isFile(); })){
-      video.input(filepaths[0]);
-    }
-    if(fs.stat(filepaths[1], (err, stats) => { return stats.isFile(); })){
-      video.input(filepaths[1]);
-    }
-    video.output(fs.createWriteStream(inputdata[0].videoDetails.title + ".mp4"));
+    fs.stat(filepaths[0], (err, stats) => {
+      if(stats.isFile()){
+        video.input(filepaths[0]);
+      }
+    });
+    fs.stat(filepaths[1], (err, stats) => {
+      if(stats.isFile()){
+        video.input(filepaths[1]);
+      }
+    });
+
+    //video.output(fs.createWriteStream(inputdata[0].videoDetails.title + ".mp4"));
+    video.output("outputfile.mp4");
+    video.output(fs.createWriteStream("outputfile.mp4"));
+    video.run();
+    //fs.unlinkSync
   } catch (e) {
     console.log(e);
   }
