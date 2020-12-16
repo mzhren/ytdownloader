@@ -2,10 +2,20 @@
 const fs = require("fs");
 const ytdl = require("ytdl-core");
 const path = require("path");
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+//const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
-ffmpeg.setFfmpegPath(ffmpegPath);
+//ffmpeg.setFfmpegPath(ffmpegPath);
 
+/*
+async function xd(){
+  var video = new ffmpeg();
+  video.input("AeroChordTheSounda.webm");
+  video.input("AeroChordTheSoundv.webm");
+  video.output("test.mp4");
+  await video.run();
+}
+xd();
+*/
 //dumb
 const textinput = document.getElementById("urlinput");
 const videoformat = document.getElementById("videofselect");
@@ -19,14 +29,11 @@ const downloadpath = "";
 var itagvideo = null;
 var itagaudio = null;
 
-//test
-console.log(path.resolve("index.html"));
-//ytdl("https://www.youtube.com/watch?v=wVyRLq4xSEc" , { quality: 18})
-//.pipe(fs.createWriteStream("a;dsklfj.mp4"));
 
 //functions
 
 //filter
+
 function filter_vid_aud_both(formats){
   audiof = formats.filter(hasaudio);
   videof = formats.filter(hasvideo);
@@ -54,26 +61,45 @@ function hasvideo(format){
 //download
 function downloadvidaud(downloadpath, name, itagvideo, containerv, itagaudio, containera){// "", title, 18, mp4, 18, mp4,
   if(ytdl.validateURL(textinput.value)){
+    //
     //remove chars from name that can`t be in windows filename
     // <>:"/\|?*
-    char = String.raw`<>:"/\|?*`;
+    char = String.raw`<>:"/\|?*- `;
     for (let i = 0; i < name.length; i++) {
 	    for(let j = 0; j < char.length; j++){
         name = name.replace(char[j], "");
 	    }
     }
     //download
+    //ffmpeg only works with valid files, so the download needs to be finished
+    //added to event listeners. if both downloads are finsihed return smth because
+    //there is an await for the return value of this function
+    var videofinish = false;
+    var audiofinish = false;
     //vid
     if(itagvideo != null){
       ytdl(textinput.value, { quality: itagvideo})
+      .on('finish', () => {
+        videofinish = true;
+        if(audiofinish){
+          return [downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera];
+        }
+      })
       .pipe(fs.createWriteStream(downloadpath + name + "v" + "." + containerv));
     }
     //aud
     if(itagaudio != null){
       ytdl(textinput.value, { quality: itagaudio})
+      .on('finish', () => {
+        audiofinish = true;
+        if(videofinish){
+          return [downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera];
+        }
+      })
       .pipe(fs.createWriteStream(downloadpath + name + "a" + "." + containera));
     }
-    return [downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera];
+    console.log(audiofinish);
+    console.log(videofinish);
   }
 }
 
@@ -135,6 +161,7 @@ textinput.addEventListener("input", async() => {
 button[0].addEventListener("click", async() => {
   //download audio and video depending on the selections; defaults for None
   //writes 2 files
+
   if( (videoformat.value == "None") && (audioformat.value == "None")){
     var filepaths = await downloadvidaud(downloadpath, inputdata[0].videoDetails.title, 136, "mp4", 140, "mp4");
   } else if( ((videoformat.value == "None") && (audioformat.value != "None"))){
@@ -148,28 +175,20 @@ button[0].addEventListener("click", async() => {
     var aformat = inputdata[1][1].filter(value => value.audioBitrate == audioformat.value)[0];
     var filepaths = await downloadvidaud(downloadpath, inputdata[0].videoDetails.title, vformat.itag, vformat.container, aformat.itag, aformat.container);
   }
+  console.log(filepaths);
 
   //merge with fluent-ffmpeg
-  try {
-    //create and input vid/aud if downloaded
-    var video = ffmpeg();
-    fs.stat(filepaths[0], (err, stats) => {
-      if(stats.isFile()){
-        video.input(filepaths[0]);
-      }
-    });
-    fs.stat(filepaths[1], (err, stats) => {
-      if(stats.isFile()){
-        video.input(filepaths[1]);
-      }
-    });
-
-    //video.output(fs.createWriteStream(inputdata[0].videoDetails.title + ".mp4"));
-    video.output("outputfile.mp4");
-    video.output(fs.createWriteStream("outputfile.mp4"));
-    video.run();
-    //fs.unlinkSync
-  } catch (e) {
-    console.log(e);
-  }
+  var video = ffmpeg();
+  fs.stat(filepaths[0], (err, stats) => {
+    if(stats.isFile()){
+      video.input(filepaths[0]);
+    }
+  });
+  fs.stat(filepaths[1], (err, stats) => {
+    if(stats.isFile()){
+      video.input(filepaths[1]);
+    }
+  });
+  video.output("test.mp4");
+  video.run();
 });
