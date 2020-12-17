@@ -4,18 +4,10 @@ const ytdl = require("ytdl-core");
 const path = require("path");
 //const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
+//ffmpeg need to be in path
 //ffmpeg.setFfmpegPath(ffmpegPath);
 
-/*
-async function xd(){
-  var video = new ffmpeg();
-  video.input("AeroChordTheSounda.webm");
-  video.input("AeroChordTheSoundv.webm");
-  video.output("test.mp4");
-  await video.run();
-}
-xd();
-*/
+
 //dumb
 const textinput = document.getElementById("urlinput");
 const videoformat = document.getElementById("videofselect");
@@ -58,8 +50,25 @@ function hasvideo(format){
   }
 }
 
+//merge with fluent-ffmpeg
+function mergevidaud(filepaths){
+  var video = ffmpeg();
+  fs.stat(filepaths[0], (err, stats) => {
+    if(stats.isFile()){
+      video.input(filepaths[0]);
+    }
+  });
+  fs.stat(filepaths[1], (err, stats) => {
+    if(stats.isFile()){
+      video.input(filepaths[1]);
+    }
+  });
+  video.output("test.mp4");
+  video.run();
+}
+
 //download
-function downloadvidaud(downloadpath, name, itagvideo, containerv, itagaudio, containera){// "", title, 18, mp4, 18, mp4,
+function downloadvidaudandmerge(downloadpath, name, itagvideo, containerv, itagaudio, containera){// "", title, 18, mp4, 18, mp4,
   if(ytdl.validateURL(textinput.value)){
     //
     //remove chars from name that can`t be in windows filename
@@ -82,7 +91,7 @@ function downloadvidaud(downloadpath, name, itagvideo, containerv, itagaudio, co
       .on('finish', () => {
         videofinish = true;
         if(audiofinish){
-          return [downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera];
+          mergevidaud([downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera]);
         }
       })
       .pipe(fs.createWriteStream(downloadpath + name + "v" + "." + containerv));
@@ -93,13 +102,12 @@ function downloadvidaud(downloadpath, name, itagvideo, containerv, itagaudio, co
       .on('finish', () => {
         audiofinish = true;
         if(videofinish){
-          return [downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera];
+          //merging can take some time, the file can only be opened after fully beeing merged
+          mergevidaud([downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera]);
         }
       })
       .pipe(fs.createWriteStream(downloadpath + name + "a" + "." + containera));
     }
-    console.log(audiofinish);
-    console.log(videofinish);
   }
 }
 
@@ -161,34 +169,18 @@ textinput.addEventListener("input", async() => {
 button[0].addEventListener("click", async() => {
   //download audio and video depending on the selections; defaults for None
   //writes 2 files
-
+  //merge inside download function
   if( (videoformat.value == "None") && (audioformat.value == "None")){
-    var filepaths = await downloadvidaud(downloadpath, inputdata[0].videoDetails.title, 136, "mp4", 140, "mp4");
+    downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, 136, "mp4", 140, "mp4");
   } else if( ((videoformat.value == "None") && (audioformat.value != "None"))){
     var aformat = inputdata[1][1].filter(value => value.audioBitrate == audioformat.value)[0];
-    filepaths = await downloadvidaud(downloadpath, inputdata[0].videoDetails.title, null, null, aformat.itag, aformat.container);
+    downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, null, null, aformat.itag, aformat.container);
   } else if( ((videoformat.value != "None") && (audioformat.value == "None"))){
     var vformat = inputdata[1][0].filter(value => value.height == videoformat.value)[0]
-    filepaths = await downloadvidaud(downloadpath, inputdata[0].videoDetails.title, vformat.itag, vformat.container, null, null);
+    downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, vformat.itag, vformat.container, null, null);
   } else {
     var vformat = inputdata[1][0].filter(value => value.height == videoformat.value)[0];
     var aformat = inputdata[1][1].filter(value => value.audioBitrate == audioformat.value)[0];
-    var filepaths = await downloadvidaud(downloadpath, inputdata[0].videoDetails.title, vformat.itag, vformat.container, aformat.itag, aformat.container);
+    downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, vformat.itag, vformat.container, aformat.itag, aformat.container);
   }
-  console.log(filepaths);
-
-  //merge with fluent-ffmpeg
-  var video = ffmpeg();
-  fs.stat(filepaths[0], (err, stats) => {
-    if(stats.isFile()){
-      video.input(filepaths[0]);
-    }
-  });
-  fs.stat(filepaths[1], (err, stats) => {
-    if(stats.isFile()){
-      video.input(filepaths[1]);
-    }
-  });
-  video.output("test.mp4");
-  video.run();
 });
