@@ -25,7 +25,6 @@ var itagaudio = null;
 //functions
 
 //filter
-
 function filter_vid_aud_both(formats){
   audiof = formats.filter(hasaudio);
   videof = formats.filter(hasvideo);
