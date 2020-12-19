@@ -25,6 +25,7 @@ var itagaudio = null;
 //functions
 
 //filter
+
 function filter_vid_aud_both(formats){
   audiof = formats.filter(hasaudio);
   videof = formats.filter(hasvideo);
@@ -35,19 +36,19 @@ function filter_vid_aud_both(formats){
 }
 
 
-//one liner formats.filter(format => format.attribute =/</> wish);
-//filter functions
 function hasaudio(format){
   if(format.audioBitrate != null){//a string, not null
     return true;
   }
 }
 
+
 function hasvideo(format){
   if(format.height != null){
     return true;
   }
 }
+
 
 //merge with fluent-ffmpeg
 function mergevidaud(filepaths, name){
@@ -65,6 +66,7 @@ function mergevidaud(filepaths, name){
   video.output(name + ".mp4");
   video.run();
 }
+
 
 //download
 function downloadvidaudandmerge(downloadpath, name, itagvideo, containerv, itagaudio, containera){// "", title, 18, mp4, 18, mp4,
@@ -164,6 +166,8 @@ textinput.addEventListener("input", async() => {
     makeoption(audioformat, "None");
   }
 });
+
+
 
 button[0].addEventListener("click", async() => {
   //download audio and video depending on the selections; defaults for None
