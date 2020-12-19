@@ -64,7 +64,7 @@ function mergevidaud(filepaths, name){
     }
   });
   video.output(name + ".mp4");
-  video.on("finish", () => {
+  video.on("end", () => {
     fs.unlinkSync(filepaths[0]);
     fs.unlinkSync(filepath[1]);
   });
@@ -96,7 +96,7 @@ function downloadvidaudandmerge(downloadpath, name, itagvideo, containerv, itaga
       .on('finish', () => {
         videofinish = true;
         if(audiofinish){
-          mergevidaud([downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera]);
+          mergevidaud([downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera], name);
         }
       })
       .pipe(fs.createWriteStream(downloadpath + name + "v" + "." + containerv));
