@@ -50,7 +50,7 @@ function hasvideo(format){
 }
 
 //merge with fluent-ffmpeg
-function mergevidaud(filepaths){
+function mergevidaud(filepaths, name){
   var video = ffmpeg();
   fs.stat(filepaths[0], (err, stats) => {
     if(stats.isFile()){
@@ -62,7 +62,7 @@ function mergevidaud(filepaths){
       video.input(filepaths[1]);
     }
   });
-  video.output("test.mp4");
+  video.output(name + ".mp4");
   video.run();
 }
 
@@ -72,7 +72,7 @@ function downloadvidaudandmerge(downloadpath, name, itagvideo, containerv, itaga
     //
     //remove chars from name that can`t be in windows filename
     // <>:"/\|?*
-    char = String.raw`<>:"/\|?*- `;
+    char = String.raw`<>:"/\|?*`;//"- "
     for (let i = 0; i < name.length; i++) {
 	    for(let j = 0; j < char.length; j++){
         name = name.replace(char[j], "");
@@ -102,7 +102,7 @@ function downloadvidaudandmerge(downloadpath, name, itagvideo, containerv, itaga
         audiofinish = true;
         if(videofinish){
           //merging can take some time, the file can only be opened after fully beeing merged
-          mergevidaud([downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera]);
+          mergevidaud([downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera], name);
         }
       })
       .pipe(fs.createWriteStream(downloadpath + name + "a" + "." + containera));
