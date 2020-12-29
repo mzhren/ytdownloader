@@ -66,7 +66,7 @@ function mergevidaud(filepaths, name){
   video.output(name + ".mp4");
   video.on("end", () => {
     fs.unlinkSync(filepaths[0]);
-    fs.unlinkSync(filepath[1]);
+    fs.unlinkSync(filepaths[1]);
   });
   video.run();
 }
