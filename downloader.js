@@ -1,7 +1,6 @@
 //requirements
 const fs = require("fs");
 const ytdl = require("ytdl-core");
-const path = require("path");
 //const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 //ffmpeg need to be in path
