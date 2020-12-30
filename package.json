@@ -1,5 +1,5 @@
 {
-  "name": "Yt Downloader",
+  "name": "ytdownloader",
   "version": "0.1.0",
   "description": "Downoad yt videos",
   "authors": "anton",
@@ -34,7 +34,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "mp3_player"
+            "name": "ytdownloader"
           }
         },
         {
