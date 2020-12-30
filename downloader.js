@@ -1,10 +1,9 @@
 //requirements
 const fs = require("fs");
 const ytdl = require("ytdl-core");
-//const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
-//ffmpeg need to be in path
-//ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 
 //dumb
@@ -14,7 +13,7 @@ const audioformat = document.getElementById("audiofselect");
 const button = document.getElementsByName("button");
 
 //const
-const downloadpath = "";
+var downloadpath = "";
 
 //var
 var itagvideo = null;
@@ -26,8 +25,8 @@ var itagaudio = null;
 //filter
 
 function filter_vid_aud_both(formats){
-  audiof = formats.filter(hasaudio);
-  videof = formats.filter(hasvideo);
+  audiof = formats.filter(format => format.audioBitrate != null);
+  videof = formats.filter(format => format.height != null);
   both = audiof.filter(function(format){
     return videof.includes(format);
   });
@@ -94,7 +93,7 @@ function downloadvidaudandmerge(downloadpath, name, itagvideo, containerv, itaga
       ytdl(textinput.value, { quality: itagvideo})
       .on('finish', () => {
         videofinish = true;
-        if(audiofinish){
+        if(audiofinish && itagvideo != null && itagaudio != null){//no need to merge if audio XOR video
           mergevidaud([downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera], name);
         }
       })
@@ -105,13 +104,14 @@ function downloadvidaudandmerge(downloadpath, name, itagvideo, containerv, itaga
       ytdl(textinput.value, { quality: itagaudio})
       .on('finish', () => {
         audiofinish = true;
-        if(videofinish){
+        if(videofinish && itagvideo != null && itagaudio != null){
           //merging can take some time, the file can only be opened after fully beeing merged
           mergevidaud([downloadpath + name + "v" + "." + containerv, downloadpath + name + "a" + "." + containera], name);
         }
       })
       .pipe(fs.createWriteStream(downloadpath + name + "a" + "." + containera));
     }
+  } else {
   }
 }
 
@@ -120,7 +120,7 @@ function makeoption(parent, value){
   newoption = document.createElement("option");
   newoption.value = value;
   newoption.innerHTML = value;
-  parent.appendChild(newoption);
+  parent.add(newoption);
 }
 
 
@@ -131,6 +131,7 @@ textinput.addEventListener("input", async() => {
     let info = await ytdl.getInfo(textinput.value);
     //filter
     let formatsall = filter_vid_aud_both(info.formats);
+    console.log(formatsall);
     let formats = formatsall.filter((value) => { return !(value.hasaudio && value.hasvideo)});
     //filter for displaying
     //video
@@ -157,19 +158,16 @@ textinput.addEventListener("input", async() => {
   } else {
     //remove all childs of the selects and add the None option back
     //because its not a YT link anymore
-    videochildren = videoformat.children;
-    audiochildren = audioformat.children;
-    for (let i = 0; i < videochildren.length; i++) {
-      videochildren[i].remove();
+    for (let i = videoformat.length; i > -1; i--) {
+      videoformat.remove(i);
     }
-    for (let i = 0; i < audiochildren.length; i++) {
-      audiochildren[i].remove();
+    for (let i = audioformat.length; i > -1; i--) {
+      audioformat.remove(i);
     }
     makeoption(videoformat, "None");
     makeoption(audioformat, "None");
   }
 });
-
 
 
 button[0].addEventListener("click", async() => {
