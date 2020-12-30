@@ -1,10 +1,10 @@
 //requirements
 const fs = require("fs");
 const ytdl = require("ytdl-core");
+const os = require("os");
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
-
 
 //dumb
 const textinput = document.getElementById("urlinput");
@@ -12,13 +12,8 @@ const videoformat = document.getElementById("videofselect");
 const audioformat = document.getElementById("audiofselect");
 const button = document.getElementsByName("button");
 
-//const
-var downloadpath = "";
-
 //var
-var itagvideo = null;
-var itagaudio = null;
-
+var downloadpath = os.homedir() + "\\";
 
 //functions
 
@@ -61,7 +56,7 @@ function mergevidaud(filepaths, name){
       video.input(filepaths[1]);
     }
   });
-  video.output(name + ".mp4");
+  video.output(downloadpath + name + ".mp4");
   video.on("end", () => {
     fs.unlinkSync(filepaths[0]);
     fs.unlinkSync(filepaths[1]);
@@ -131,7 +126,6 @@ textinput.addEventListener("input", async() => {
     let info = await ytdl.getInfo(textinput.value);
     //filter
     let formatsall = filter_vid_aud_both(info.formats);
-    console.log(formatsall);
     let formats = formatsall.filter((value) => { return !(value.hasaudio && value.hasvideo)});
     //filter for displaying
     //video
@@ -174,17 +168,19 @@ button[0].addEventListener("click", async() => {
   //download audio and video depending on the selections; defaults for None
   //writes 2 files
   //merge inside download function
-  if( (videoformat.value == "None") && (audioformat.value == "None")){
-    downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, 136, "mp4", 140, "mp4");
-  } else if( ((videoformat.value == "None") && (audioformat.value != "None"))){
-    var aformat = inputdata[1][1].filter(value => value.audioBitrate == audioformat.value)[0];
-    downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, null, null, aformat.itag, aformat.container);
-  } else if( ((videoformat.value != "None") && (audioformat.value == "None"))){
-    var vformat = inputdata[1][0].filter(value => value.height == videoformat.value)[0]
-    downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, vformat.itag, vformat.container, null, null);
-  } else {
-    var vformat = inputdata[1][0].filter(value => value.height == videoformat.value)[0];
-    var aformat = inputdata[1][1].filter(value => value.audioBitrate == audioformat.value)[0];
-    downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, vformat.itag, vformat.container, aformat.itag, aformat.container);
-  }
+  if(inputdata != undefined){
+    if( (videoformat.value == "None") && (audioformat.value == "None")){
+      downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, 136, "mp4", 140, "mp4");
+    } else if( ((videoformat.value == "None") && (audioformat.value != "None"))){
+      var aformat = inputdata[1][1].filter(value => value.audioBitrate == audioformat.value)[0];
+      downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, null, null, aformat.itag, aformat.container);
+    } else if( ((videoformat.value != "None") && (audioformat.value == "None"))){
+      var vformat = inputdata[1][0].filter(value => value.height == videoformat.value)[0]
+      downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, vformat.itag, vformat.container, null, null);
+    } else {
+      var vformat = inputdata[1][0].filter(value => value.height == videoformat.value)[0];
+      var aformat = inputdata[1][1].filter(value => value.audioBitrate == audioformat.value)[0];
+      downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, vformat.itag, vformat.container, aformat.itag, aformat.container);
+    }
+  } 
 });
