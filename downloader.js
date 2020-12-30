@@ -2,9 +2,7 @@
 const fs = require("fs");
 const ytdl = require("ytdl-core");
 const os = require("os");
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
-ffmpeg.setFfmpegPath(ffmpegPath);
 
 //dumb
 const textinput = document.getElementById("urlinput");
@@ -182,5 +180,5 @@ button[0].addEventListener("click", async() => {
       var aformat = inputdata[1][1].filter(value => value.audioBitrate == audioformat.value)[0];
       downloadvidaudandmerge(downloadpath, inputdata[0].videoDetails.title, vformat.itag, vformat.container, aformat.itag, aformat.container);
     }
-  } 
+  }
 });
