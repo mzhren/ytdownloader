@@ -3,6 +3,7 @@ const fs = require("fs");
 const ytdl = require("ytdl-core");
 const os = require("os");
 const ffmpeg = require('fluent-ffmpeg');
+//#ffmpeg/ffprobe installer
 
 //dumb
 const textinput = document.getElementById("urlinput");
@@ -13,7 +14,10 @@ const button = document.getElementsByName("button");
 //var
 var downloadpath = os.homedir() + "\\";
 
-//functions
+/* ==========================================================================
+                              FUNCTIONS
+========================================================================== */
+
 
 //filter
 
@@ -24,20 +28,6 @@ function filter_vid_aud_both(formats){
     return videof.includes(format);
   });
   return [videof, audiof, both];
-}
-
-
-function hasaudio(format){
-  if(format.audioBitrate != null){//a string, not null
-    return true;
-  }
-}
-
-
-function hasvideo(format){
-  if(format.height != null){
-    return true;
-  }
 }
 
 
@@ -108,6 +98,7 @@ function downloadvidaudandmerge(downloadpath, name, itagvideo, containerv, itaga
   }
 }
 
+
 //GUI
 function makeoption(parent, value){
   newoption = document.createElement("option");
@@ -115,6 +106,10 @@ function makeoption(parent, value){
   newoption.innerHTML = value;
   parent.add(newoption);
 }
+
+/* ==========================================================================
+                              MAIN CODE
+========================================================================== */
 
 
 //event listener
