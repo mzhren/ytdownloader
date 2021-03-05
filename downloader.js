@@ -3,7 +3,6 @@ const fs = require("fs");
 const ytdl = require("ytdl-core");
 const os = require("os");
 const ffmpeg = require('fluent-ffmpeg');
-//#ffmpeg/ffprobe installer
 
 //dumb
 const textinput = document.getElementById("urlinput");

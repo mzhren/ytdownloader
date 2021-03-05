@@ -1,14 +1,12 @@
 const { app, BrowserWindow } = require('electron')
-const ytdls = require("ytdl-core");
 function createWindow () {
   const win = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1500,
+    height: 1000,
     webPreferences: {
       nodeIntegration: true
-    }
-  })
-
+  	}
+  });
   win.loadFile('index.html');
 }
 
