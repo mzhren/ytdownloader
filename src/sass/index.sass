@@ -1,0 +1,254 @@
+/* fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+$roboto: 'Roboto', sans-serif
+
+/* general */
+
+*
+    margin: 0
+    padding: 0
+    outline: none
+    user-select: none
+    font-family: $roboto
+
+html, body
+    width: 100%
+    height: 100%
+
+/* app */
+.app
+    width: 100%
+    height: 100%
+    background: #202020
+
+/* topbar */
+.topbar
+    width: 100%
+    height: 40px
+    display: flex
+
+    .headline
+        width: 80%
+        display: flex
+        justify-content: center
+        align-items: center
+
+        a
+            text-decoration: none
+            color: white
+
+    .settings
+        width: 20%
+        display: flex
+        align-items: center
+        position: relative
+        justify-content: flex-end
+
+        .open-settings
+            position: absolute
+            height: 24px
+            right: 5px
+            top: 5px
+            cursor: pointer
+
+.download-settings
+    position: absolute
+    top: 0
+    right: 0
+    display: flex
+    justify-content: center
+    align-items: center
+    flex-direction: column
+    border: 2px solid black
+    width: 350px
+    height: 200px
+    background: #202020
+    border-radius: 10px
+    display: none
+    box-sizing: border-box
+
+    .close-settings
+        position: absolute
+        top: 3px
+        right: 3px
+        height: 24px
+        cursor: pointer
+
+    .select
+        display: flex
+        color: white
+        margin-bottom: 5px
+
+        span
+            margin-right: 10px
+            width: 100px
+
+        select
+            width: 100px
+            border: 1px solid black
+            border-radius: 4px
+            background: grey
+
+            option
+                color: white
+
+
+    
+
+/* main */
+.main
+    display: flex
+    width: 100%
+    height:  calc(100% - 40px)
+
+    .webview
+        width: 80%
+
+    .right
+        width: 20%
+        display: flex
+        flex-direction: column
+
+
+@keyframes click
+    0%
+        transform: scale(0.8,0.8)
+    100%
+        transform: scale(1.05,1.05)
+
+.download-section
+    height: 10%
+    display: flex
+    flex-direction: column
+    justify-content: center
+
+    .click-animation::after
+        content: ""
+        position: absolute
+        width: 100%
+        height: 100%
+        border: 5px solid grey
+        opacity: 0.3
+        animation: click 0.25s ease
+        border-radius: 15px
+        left: -5px
+
+    .download
+        position: relative
+        cursor: pointer
+        display: flex
+        justify-content: left
+        align-items: center
+        margin-bottom: 10px
+        margin-left: 10px
+        width: 70%
+        color: white
+
+        img
+            height: 30px
+            margin-right: 20px
+
+            &:hover
+                height: 32px
+        
+        span
+            font-size: 20px
+        
+.list-area
+    height: 90%
+    width: 100%
+    display: flex
+    flex-direction: column
+
+    .add-to-list
+        width: 100%
+        height: 20%
+        display: flex
+
+        .input
+            width: 100%
+            height: 100%
+            border: none
+            outline: none
+            box-sizing: border-box
+            border: 2px solid black
+            border-radius: 10px
+            background-image: url("../img/arrowdown.svg")
+            background-repeat: no-repeat
+            background-position: center
+            background-size: 50px
+            color: white
+
+    .list
+        width: 100%
+        height: 80%
+
+.change-tab
+    display: flex
+    width: 100%
+    height: 5%
+    color: white
+
+    .tab
+        width: 50%
+        display: flex
+        justify-content: center
+        align-items: center
+        border-radius: 10px 10px 0px 0px
+
+    .active-tab
+        background: #263238
+
+    .tab-downloadqueque
+
+    .tab-directory-listing
+
+
+.tabs
+    display: flex
+    width: 100%
+    height: 95%
+    background: #263238
+
+    .downloadqueque
+        width: 100%
+        height: 100%
+        display: flex
+        justify-content: center
+        align-items: center
+
+        .songs
+            width: 100%
+            height: 100%
+
+            .download-div
+                display: flex
+                width: 100%
+                height: 60px
+
+                .download-img
+                    height: 100%
+
+                .download-text
+                    display: flex
+                    justify-content: center
+                    align-items: flex-start
+                    flex-direction: column
+                    padding-left: 10px
+                    overflow-wrap: normal
+                    color: white
+                    font-size: 10px
+
+                    .download-title
+
+                    .download-progress
+                        margin-top: 10px
+
+    .directory-listing
+        width: 100%
+        height: 100%
+        display: none
+        justify-content: center
+        align-items: center
+
+        .files

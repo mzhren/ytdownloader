@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Youtube Downloader</title>
+    <!-- css -->
+    <link rel="stylesheet" href="sass/index.min.css">
+  </head>
+  <body>
+    <div class="app">
+        <div class="topbar">
+            <div class="headline">
+                <a href="https://github.com/Redstonerayy/ytdownloader">Youtube Downloader</a>
+            </div>
+            <div class="settings">
+                <img class="open-settings" src="img/settings.svg" alt="">
+                <div class="download-settings">
+                    <img class="close-settings" src="img/settings.svg" alt="">
+                    <div class="video-select select">
+                        <span>Video Quality</span>
+                        <select  class="height" name="" id="">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                            <option value="144">144p</option>
+                            <option value="240">240p</option>
+                            <option value="360">360p</option>
+                            <option value="480">480p</option>
+                            <option selected value="720">720p</option>
+                            <option value="1080">1080p</option>
+                        </select>
+                    </div>
+                    <div class="audio-select select">
+                        <span>Audio Quality</span>
+                        <select class="bitrate" name="" id="">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                            <option value="48">48kb</option>
+                            <option value="64">64kb</option>
+                            <option selected value="96">96kb</option>
+                            <option value="128">128kb</option>
+                            <option value="160">160kb</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main">
+            <webview class="webview" src="https://youtube.com"></webview>
+            <div class="right">
+                <div class="download-section">
+                    <div class="download video">
+                        <img src="img/play.svg" alt="">
+                        <span>Download Video</span>
+                    </div>
+                    <div class="download playlist" style="display: none;">
+                        <img src="img/playlist.svg" alt="">
+                        <span>Download List</span>
+                    </div>
+                </div>
+                <div class="list-area">
+                    <div class="add-to-list">
+                        <input class="input" type="text">
+                    </div>
+                    <div class="list">
+                        <div class="change-tab">
+                            <div class="tab-downloadqueque tab active-tab">
+                                Downloadqueque
+                            </div>
+                            <div class="tab-directory-listing tab">
+                                Songs in Directory
+                            </div>
+                        </div>
+                        <div class="tabs">
+                            <div class="downloadqueque">
+                                <div class="songs">
+
+                                </div>
+                            </div>
+                            <div class="directory-listing">
+                                <div class="files">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- javascript -->
+    <script type="text/javascript" src="js/menu.js"></script>
+    <script type="text/javascript" src="js/list.js"></script>    
+    <script type="text/javascript" src="js/video.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+  </body>
+</html>
