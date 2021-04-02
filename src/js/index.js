@@ -5,6 +5,8 @@
 const ffmpeg = require("fluent-ffmpeg");
 const fs = require("fs");
 const ytdl = require("ytdl-core");
+const os = require('os');
+const path = require("path");
 
 /*
 ! variables from menu.js
@@ -12,13 +14,41 @@ const ytdl = require("ytdl-core");
 -downloadplaylist
 */
 var songs = document.querySelector(".songs");
-var files = document.querySelector(".files");
 var dropinput = document.querySelector(".input");
 var webview = document.querySelector(".webview");
 var videoquality = document.querySelector(".height");
 var audioquality = document.querySelector(".bitrate");
 
 var videodownloads = [];
+
+//cleanup
+var videocleanup = setInterval(() => {
+    videodownloads.forEach( (video, index) => {
+        if(video.finished){
+            videodownloads.splice(index, 1);
+        }
+    });
+}, 250);
+
+
+//set path
+var directory = path.join(os.homedir(), "YtDownloads");
+if(process.platform == "win32"){
+    directory += "\\";
+} else {
+    directory += "/";
+}
+
+//check folder existance
+fs.stat(directory, (err, stats) => {
+    if(err){
+        fs.mkdir(directory, (err) => {
+        });
+    } else {
+    }
+})
+
+
 
 /* ------------------------------------------------
                    START
@@ -41,7 +71,7 @@ downloadvideo.addEventListener('click', (event) => {
             audioquality: audioquali,
             videoquality: videoquali
         },
-        ""))
+        directory))
     }
 });
 
@@ -62,8 +92,40 @@ dropinput.addEventListener('input', (event) => {
             audioquality: audioquali,
             videoquality: videoquali
         },
-        ""))
+        directory))
     }
 });
 
-// make directory listing
+/* ------------------------------------------------
+                   DIRECTORY
+                   LISTING
+-------------------------------------------------*/
+
+var filecontainer = document.querySelector(".files");
+var fileslastread = [];
+
+var updatedir = setInterval(() => {
+    let path = directory == "" ? __dirname : directory; 
+    fs.readdir(path, (err, files) => {
+        let newfiles = files.filter(file => !fileslastread.includes(file));
+        let removedfiles = fileslastread.filter(file => !files.includes(file));
+        
+        newfiles.forEach(file => {
+            let filep = document.createElement('p');
+            filep.id = file;
+            filep.className = "filep";
+            let displayname = file.split(".");
+            displayname.splice(displayname.length - 1, 1);
+            displayname = displayname.join("");//join elements together without ending
+            filep.innerHTML = displayname;
+            filecontainer.appendChild(filep);
+        });
+
+        removedfiles.forEach(file => {
+            document.getElementById(file).remove();
+        });
+
+        fileslastread = files;
+    });
+}, 1000);
+

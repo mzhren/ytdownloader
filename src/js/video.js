@@ -129,7 +129,7 @@ class Video {
             this.downloads = [];
             this.downloadsfinished = 0;
             this.downloadformats.forEach((format, index) => {
-                this.downloads.push(this.title + index.toString() + "." + format.container);
+                this.downloads.push(this.path + this.title + index.toString() + "." + format.container);
                 ytdl.downloadFromInfo(info, { 
                     quality: format.itag
                 }).pipe(fs.createWriteStream(this.path + this.title + index.toString() + "." + format.container))
@@ -138,7 +138,6 @@ class Video {
                     if(this.downloadsfinished == this.downloadformats.length){
                         this.downloaditem.changeProgress("Merging...");
                         if(this.downloads.length == 2){
-                            console.log("1");
                             let splittedfilename = this.downloads[0].split(".");
                             this.output = this.title + "." + splittedfilename[splittedfilename.length - 1];
                             this.merge = new ffmpeg();
@@ -149,8 +148,6 @@ class Video {
                                 this.downloads.forEach(file => {
                                     fs.unlink(file, () => {});
                                 });
-                                console.log("end1");
-                                console.log(document.getElementById(this.title));
                                 document.getElementById(this.title).remove();
                                 this.finished = true;
                             })
@@ -158,8 +155,10 @@ class Video {
                             .run();
                         
                         } else if(!this.videooutput || !this.audiooutput){//one of them is false
-                            console.log("2");
                             let splittedfilename = this.downloads[0].split(".");
+                            if(!this.videooutput){
+                                splittedfilename.splice(splittedfilename.length - 1, 1, "mp3");
+                            }
                             this.output = this.title + "." + splittedfilename[splittedfilename.length - 1];
                             this.merge = new ffmpeg();
                             this.merge.input(this.downloads[0])
@@ -167,8 +166,6 @@ class Video {
                                 this.downloads.forEach(file => {
                                     fs.unlink(file, () => {});
                                 });
-                                console.log("end2");
-                                console.log(document.getElementById(this.title));
                                 document.getElementById(this.title).remove();
                                 this.finished = true;
                             });

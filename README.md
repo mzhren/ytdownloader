@@ -12,3 +12,7 @@ npm update
 npm start
 npm run make
 ```
+
+## Note
+-unsure how it deals with livestreams. it downloads them and updates the files, but
+when does it stop?

@@ -1,6 +1,6 @@
 {
   "name": "ytdownloader",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Downoad yt videos",
   "authors": "anton",
   "main": "src/main.js",

@@ -211,8 +211,9 @@ html, body
     background: #263238
 
     .downloadqueque
-        width: 100%
+        width: calc(100% - 25px)
         height: 100%
+        padding: 0px 10px
         display: flex
         justify-content: center
         align-items: center
@@ -220,11 +221,14 @@ html, body
         .songs
             width: 100%
             height: 100%
+            overflow-y: auto
+            overflow-x: hidden
 
             .download-div
                 display: flex
                 width: 100%
                 height: 60px
+                margin-bottom: 3px
 
                 .download-img
                     height: 100%
@@ -252,3 +256,32 @@ html, body
         align-items: center
 
         .files
+            width: calc(100% - 25px)
+            height: calc(100% - 20px)
+            display: flex
+            justify-content: flex-start
+            align-items: flex-start
+            flex-direction: column
+            padding: 10px
+            overflow-y: auto
+            overflow-x: hidden
+
+            .filep
+                white-space: nowrap
+                font-size: 14px
+                color: white
+                margin-bottom: 3px
+
+/* scrollbars */
+::-webkit-scrollbar
+    width: 10px;
+
+/* Track */
+::-webkit-scrollbar-track
+    background: #263238;
+    border-radius: 15px
+
+/* Handle */
+::-webkit-scrollbar-thumb
+    background: #000000;
+    border-radius: 15px
